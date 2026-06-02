@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>더존 솔루션 현황 보고서</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f6fb;
+    --surface: #eef0f7;
+    --card: #ffffff;
+    --border: #dde1ef;
+    --accent: #2356e8;
+    --accent2: #00a882;
+    --accent3: #e85a1a;
+    --accent4: #7c3aed;
+    --text: #1a1f36;
+    --muted: #8690b0;
+    --label: #4a5278;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: linear-gradient(135deg, #e8edfb 0%, #f0f4ff 50%, #e4eaf8 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 60px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(35,86,232,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 200px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(0,168,130,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-meta {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .header h1 {
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .header h1 span { color: var(--accent); }
+  .header-sub {
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 300;
+  }
+  .report-date {
+    position: absolute;
+    top: 48px; right: 60px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.8;
+    font-weight: 400;
+  }
+
+  /* ─── LAYOUT ─── */
+  .container { padding: 40px 60px; max-width: 1200px; }
+
+  .section-label {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    margin-top: 0;
+    font-weight: 500;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+
+  /* ─── KPI CARDS ─── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .kpi-card.blue::before { background: var(--accent); }
+  .kpi-card.green::before { background: var(--accent2); }
+  .kpi-card.orange::before { background: var(--accent3); }
+  .kpi-card.purple::before { background: var(--accent4); }
+
+  .kpi-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+  .kpi-value {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .kpi-card.blue .kpi-value { color: var(--accent); }
+  .kpi-card.green .kpi-value { color: var(--accent2); }
+  .kpi-card.orange .kpi-value { color: var(--accent3); }
+  .kpi-card.purple .kpi-value { color: var(--accent4); }
+
+  .kpi-sub { font-size: 11px; color: var(--muted); }
+
+  /* ─── TWO COLUMN ─── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 40px; }
+
+  /* ─── PANEL ─── */
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .panel-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .dot-blue { background: var(--accent); }
+  .dot-green { background: var(--accent2); }
+  .dot-orange { background: var(--accent3); }
+  .dot-purple { background: var(--accent4); }
+
+  /* ─── BAR CHART ─── */
+  .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+  .bar-row { display: flex; flex-direction: column; gap: 4px; }
+  .bar-meta { display: flex; justify-content: space-between; align-items: center; }
+  .bar-name { font-size: 12px; color: var(--label); }
+  .bar-amt {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .bar-track {
+    height: 6px; background: var(--border); border-radius: 99px; overflow: hidden;
+  }
+  .bar-fill { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+
+  /* ─── TIMELINE TABLE ─── */
+  .tbl { width: 100%; border-collapse: collapse; }
+  .tbl thead th {
+    padding: 10px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-align: left;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .tbl tbody tr { border-bottom: 1px solid var(--border); }
+  .tbl tbody tr:hover { background: rgba(35,86,232,0.03); }
+  .tbl tbody td { padding: 10px 12px; font-size: 12px; vertical-align: top; }
+  .tbl tbody td:first-child { color: var(--muted); font-family: 'Noto Sans KR', sans-serif; font-size: 11px; }
+  .tbl .amount {
+    font-family: 'Noto Sans KR', sans-serif;
+    text-align: right;
+    color: var(--accent2);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .tbl .note { color: var(--muted); font-size: 11px; }
+  .tbl .subtotal td { background: rgba(35,86,232,0.05); font-weight: 700; }
+  .tbl .subtotal .amount { color: var(--accent); }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .tag-cloud { background: rgba(0,168,130,0.12); color: var(--accent2); }
+  .tag-blue { background: rgba(35,86,232,0.1); color: var(--accent); }
+  .tag-gw { background: rgba(124,58,237,0.1); color: var(--accent4); }
+  .tag-sa { background: rgba(232,90,26,0.1); color: var(--accent3); }
+
+  /* ─── MODULE GRID ─── */
+  .module-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .module-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .module-name { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+  .module-users {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ─── YEARLY COMPARE ─── */
+  .year-compare { display: flex; gap: 12px; align-items: flex-end; }
+  .year-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .year-bar-wrap {
+    width: 100%; display: flex; flex-direction: column; align-items: center;
+    height: 120px; justify-content: flex-end;
+  }
+  .year-bar {
+    width: 100%; border-radius: 6px 6px 0 0;
+    min-height: 4px;
+  }
+  .year-label {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .year-val {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11px;
+    color: var(--text);
+    text-align: center;
+  }
+
+  /* ─── HIGHLIGHT BOX ─── */
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(35,86,232,0.05), rgba(0,168,130,0.04));
+    border: 1px solid rgba(35,86,232,0.15);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+  }
+  .highlight-box .hl-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+  .highlight-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .highlight-list li {
+    font-size: 13px;
+    color: var(--label);
+    padding-left: 16px;
+    position: relative;
+  }
+  .highlight-list li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--accent2);
+    font-size: 18px;
+    line-height: 1.3;
+    font-weight: 700;
+  }
+  .highlight-list li strong { color: var(--text); }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: 11px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+  @media print {
+    body { background: #fff; color: #111; }
+    .header { background: #f5f7ff; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="report-date">
+    보고일: 2025년 5월<br>
+    작성: 내부 보고용 초안<br>
+    기준: 2021~2026년
+  </div>
+  <div class="header-meta">Internal Report · ERP System</div>
+  <h1>사내 <span>더존</span> 솔루션 도입 및 운영 현황</h1>
+  <div class="header-sub">더존 ICube · Bizbox A · Smart-A 통합 지출 분석 보고서</div>
+</div>
+
+<div class="container">
+
+  <!-- KPI -->
+  <div class="section-label">핵심 지표</div>
+  <div class="section-title">전체 지출 요약</div>
+  <div class="kpi-grid">
+    <div class="kpi-card blue">
+      <div class="kpi-label">전체 누적 지출 (도입+이용료 전체)</div>
+      <div class="kpi-value">약 2.4억</div>
+      <div class="kpi-sub">2021년 도입 ~ 2026년 현재 (238,411,140원)</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">전체 이용료 (22~26)</div>
+      <div class="kpi-value">152,325,140</div>
+      <div class="kpi-sub">클라우드·ICube·Bizbox·구좌·Smart-A 합산</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">Smart-A 이용료 (22~26)</div>
+      <div class="kpi-value">9,658,000</div>
+      <div class="kpi-sub">2025년 9월 해지 완료</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">현재 계약 라이선스</div>
+      <div class="kpi-value">190 ea</div>
+      <div class="kpi-sub">Bizbox A (2025.07~2026.06)</div>
+    </div>
+  </div>
+
+  <!-- HIGHLIGHT -->
+  <div class="highlight-box">
+    <div class="hl-title">■ 주요 현황 요약</div>
+    <ul class="highlight-list">
+      <li><strong>도입 시기:</strong> 2021년 10월 더존 ICube 및 Bizbox 계약·구축 시작 (총 도입비 약 5천만 원 수준)</li>
+      <li>
+        <div style="background:rgba(220,38,38,0.06);border-radius:6px;padding:8px 12px;">
+          <strong>운영 모듈:</strong> <strong>회계(10user), 영업(6user), 구매(6user), 무역(6user), 금융CMS(2user)</strong><br>
+          <strong style="color:var(--label);">+ 자동전표 · 자동환율 · 무역/인사/구매 임포트 기능 활용</strong>
+        </div>
+      </li>
+      <li>
+        <strong>연간 지출 추이 (Smart-A 제외)</strong><br>
+        <span style="display:flex;flex-wrap:wrap;gap:6px 0;padding-left:4px;padding-top:6px;line-height:2.2;">
+          <span style="color:#e05555;">2021년: 약 1,529만 원 (도입)</span>
+          <span style="color:#e05555;margin:0 8px;">→</span>
+          <span style="color:#e05555;">2022년: 약 6,778만 원 (도입잔금+이용료)</span>
+          <span style="color:#e05555;margin:0 8px;">→</span>
+          <span style="color:#e05555;">2023년: 약 3,921만 원</span>
+          <span style="color:#e05555;margin:0 8px;">→</span>
+          <span style="color:#e05555;">2024년: 약 4,196만 원 (대형 모듈 도입)</span>
+          <span style="color:#e05555;margin:0 8px;">→</span>
+          <span style="color:#e05555;">2025년: 약 4,089만 원</span>
+        </span>
+      </li>
+      <li>
+        <div style="background:rgba(220,38,38,0.06);border-radius:6px;padding:8px 12px;">
+          <strong>정부지원 수혜:</strong> <strong>2023년 클라우드서비스 이용지원 사업 활용</strong><br>
+          <strong style="color:var(--label);">정부지원금 4,392,960원 차감 → 실 자부담 7,687,680원</strong>
+        </div>
+      </li>
+      <li><strong>Smart-A 서비스:</strong> 2025년 9월 해지 완료 (월 187,000원 절감)</li>
+      <li><strong>2026년 Bizbox 라이선스:</strong> 규모 확인 중 (지급 예정)</li>
+    </ul>
+  </div>
+
+  <!-- YEAR COMPARISON -->
+  <div class="panel" style="margin-bottom:32px;">
+      <div class="panel-title"><span class="dot dot-blue"></span> 연도별 지출 비교 (Smart-A 제외 전체 합산)</div>
+      <!-- Bar chart: 최대값 2022년 67,784,090원 = 100% -->
+      <div class="bar-chart">
+        <div class="bar-row">
+          <div class="bar-meta">
+            <span class="bar-name">2021년 <span style="font-size:10px;color:var(--muted);">(도입비)</span></span>
+            <span class="bar-amt">15,290,550원</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:23%;background:var(--muted);"></div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-meta">
+            <span class="bar-name">2022년 <span style="font-size:10px;color:var(--muted);">(도입잔금+모듈+이용료+구좌)</span></span>
+            <span class="bar-amt">67,784,090원</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:100%;background:var(--accent);"></div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-meta">
+            <span class="bar-name">2023년</span>
+            <span class="bar-amt">39,213,020원</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:58%;background:var(--accent3);"></div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-meta">
+            <span class="bar-name">2024년 <span style="font-size:10px;color:var(--muted);">(대형 모듈 도입 포함)</span></span>
+            <span class="bar-amt">41,962,800원</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:62%;background:var(--accent2);"></div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-meta">
+            <span class="bar-name">2025년</span>
+            <span class="bar-amt">40,886,340원</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:60%;background:var(--accent4);"></div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-meta">
+            <span class="bar-name">2026년 <span style="font-size:10px;color:var(--muted);">(Bizbox 미확정 제외)</span></span>
+            <span class="bar-amt">23,616,340원</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:35%;background:var(--muted);"></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="font-size:11px;color:#e03030;">* Smart-A 월 이용료 제외 / 클라우드·ICube·Bizbox A·구좌추가·모듈구매 전체 합산<br>* 2023년은 클라우드 정부지원 수혜 후 실 지출(자부담 7,687,680원) 기준<br>* 2026년은 Bizbox 이용료 미확정분 제외</div>
+      </div>
+    </div>
+
+  <!-- SMART-A -->
+  <div class="section-label">Smart-A 이용료</div>
+  <div class="section-title">Smart-A 이용료 이력 요약</div>
+  <div class="panel" style="margin-bottom:32px;">
+    <div class="panel-title"><span class="dot dot-orange"></span> 더존 Smart-A 월별 이용료 (2022~2025)</div>
+    <div class="bar-chart">
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-name">2022년 (월 418,000원 → 187,000원)</span>
+          <span class="bar-amt">3,487,000원</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:100%;background:var(--accent3);"></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-name">2023년 (월 187,000원 × 12)</span>
+          <span class="bar-amt">2,244,000원</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:57%;background:var(--accent3);"></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-name">2024년 (월 187,000원 × 12)</span>
+          <span class="bar-amt">2,244,000원</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:57%;background:var(--accent3);"></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-name">2025년 (1~9월, 9월 해지)</span>
+          <span class="bar-amt">1,683,000원</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:43%;background:var(--muted);"></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:11px;color:#e03030;">
+      ※ 2022년 초반 418,000원/월 → 이후 187,000원/월로 조정 · 2025년 9월 서비스 해지 완료
+    </div>
+  </div>
+
+  <!-- DETAIL TABLE: 도입/모듈 파트 -->
+  <div class="section-label">상세 이력</div>
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+    <div class="section-title" style="margin-bottom:0;">도입 / 모듈 구매 내역</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+      <span class="tag tag-blue">회계 10u</span>
+      <span class="tag tag-blue">영업 6u</span>
+      <span class="tag tag-blue">구매 6u</span>
+      <span class="tag tag-blue">무역 6u</span>
+      <span class="tag tag-blue">금융CMS 2u</span>
+      <span class="tag tag-gw">그룹웨어</span>
+      <span class="tag tag-cloud">자동전표</span>
+      <span class="tag tag-cloud">자동환율</span>
+      <span class="tag tag-cloud">클라우드 백업</span>
+      <span class="tag tag-cloud">보안&관제</span>
+    </div>
+  </div>
+  <div class="panel" style="margin-bottom:32px;overflow-x:auto;">
+
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>연도</th>
+          <th>월</th>
+          <th>구분</th>
+          <th>내용</th>
+          <th style="text-align:right;">지출금액 (원, VAT포함)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2021</td><td>10월</td><td><span class="tag tag-blue">도입</span></td>
+          <td>더존 ICUBE SW 구축 계약금</td>
+          <td class="amount">3,814,800</td>
+        </tr>
+        <tr>
+          <td></td><td>10월</td><td><span class="tag tag-gw">도입</span></td>
+          <td>더존 Bizbox A 도입 계약금</td>
+          <td class="amount">11,475,750</td>
+        </tr>
+        <tr class="subtotal">
+          <td colspan="4" style="text-align:right;color:var(--muted);font-size:12px;">21년 소계</td>
+          <td class="amount">15,290,550</td>
+        </tr>
+        <tr>
+          <td>2022</td><td>01월</td><td><span class="tag tag-blue">도입</span></td>
+          <td>더존 ICUBE SW 구축 잔금</td>
+          <td class="amount">8,901,200</td>
+        </tr>
+        <tr>
+          <td></td><td>01월</td><td><span class="tag tag-gw">도입</span></td>
+          <td>더존 Bizbox A 도입 잔금</td>
+          <td class="amount">26,776,750</td>
+        </tr>
+        <tr>
+          <td></td><td>07월</td><td><span class="tag tag-cloud">모듈</span></td>
+          <td>더존 스마트자금관리 모듈 구매</td>
+          <td class="amount">2,200,000</td>
+        </tr>
+        <tr>
+          <td></td><td>12월</td><td><span class="tag tag-cloud">모듈</span></td>
+          <td>더존 ICUBE 금융모듈 구매</td>
+          <td class="amount">2,750,000</td>
+        </tr>
+        <tr class="subtotal">
+          <td colspan="4" style="text-align:right;color:var(--muted);font-size:12px;">22년 소계</td>
+          <td class="amount">40,628,950</td>
+        </tr>
+        <tr>
+          <td>2023</td><td>01월</td><td><span class="tag tag-cloud">모듈</span></td>
+          <td>더존 ICUBE 금융모듈 사용자 추가</td>
+          <td class="amount">110,000</td>
+        </tr>
+        <tr>
+          <td></td><td>06월</td><td><span class="tag tag-cloud">모듈</span></td>
+          <td>더존 ICUBE 회계관리 추가</td>
+          <td class="amount">1,540,000</td>
+        </tr>
+        <tr>
+          <td></td><td>07월</td><td><span class="tag tag-cloud">모듈</span></td>
+          <td>더존 ICUBE 인사/급여관리 추가</td>
+          <td class="amount">550,000</td>
+        </tr>
+        <tr class="subtotal">
+          <td colspan="4" style="text-align:right;color:var(--muted);font-size:12px;">23년 소계</td>
+          <td class="amount">2,200,000</td>
+        </tr>
+        <tr>
+          <td>2024</td><td>02월</td><td><span class="tag tag-cloud">모듈</span></td>
+          <td>더존 ICUBE 회계관리 추가</td>
+          <td class="amount">770,000</td>
+        </tr>
+        <tr>
+          <td></td><td>03월</td><td><span class="tag tag-blue">지원</span></td>
+          <td>더존 AM10 & ICUBE 사전 구축 지원</td>
+          <td class="amount">550,000</td>
+        </tr>
+        <tr>
+          <td></td><td>04월</td><td><span class="tag tag-blue">모듈</span></td>
+          <td>더존 ICUBE 무역관리 / 구매자재관리 / 무역관리</td>
+          <td class="amount">26,647,500</td>
+        </tr>
+        <tr class="subtotal">
+          <td colspan="4" style="text-align:right;color:var(--muted);font-size:12px;">24년 소계</td>
+          <td class="amount">27,967,500</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DETAIL TABLE: 이용료 파트 -->
+  <div class="section-title">연간 이용료 지출 내역</div>
+  <div class="panel" style="margin-bottom:32px;overflow-x:auto;">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>연도</th>
+          <th>월</th>
+          <th>구분</th>
+          <th>내용</th>
+          <th style="text-align:right;">지출금액 (원, VAT포함)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 2022 -->
+        <tr>
+          <td>2022</td><td>02월</td><td><span class="tag tag-cloud">클라우드</span></td>
+          <td>클라우드 서비스 (ICUBE, 그룹웨어) 연간 이용료<br><span class="note">기간: 2022.01.01 ~ 2022.12.31</span></td>
+          <td class="amount">12,080,640</td>
+        </tr>
+        <tr>
+          <td></td><td>04월</td><td><span class="tag tag-blue">ICUBE</span></td>
+          <td>ICUBE 블루멤버십 연간 이용료<br><span class="note">기간: 2022.03 ~ 2023.02</span></td>
+          <td class="amount">3,883,000</td>
+        </tr>
+        <tr>
+          <td></td><td>06월</td><td><span class="tag tag-gw">Bizbox</span></td>
+          <td>Bizbox A 블루멤버십 연간 이용료<br><span class="note">기간: 2022.07.01 ~ 2023.06.30</span></td>
+          <td class="amount">7,892,500</td>
+        </tr>
+        <tr class="subtotal">
+          <td colspan="4" style="text-align:right;color:var(--muted);font-size:12px;">22년 소계</td>
+          <td class="amount">23,856,140</td>
+        </tr>
+        <!-- 2023 -->
+        <tr>
+          <td>2023</td><td>02월</td><td><span class="tag tag-cloud">클라우드</span></td>
+          <td>클라우드 서비스 (ICUBE, 그룹웨어) 연간 이용료<br><span class="note">기간: 2023.01.01 ~ 2023.12.31</span></td>
+          <td class="amount">12,080,640</td>
+        </tr>
+        <tr>
+          <td></td><td>02월</td><td><span class="tag tag-blue">ICUBE</span></td>
+          <td>ICUBE 블루멤버십 연간 이용료<br><span class="note">기간: 2023.03.01 ~ 2024.02.29</span></td>
+          <td class="amount">4,565,000</td>
+        </tr>
+        <tr>
+          <td></td><td>07월</td><td><span class="tag tag-gw">Bizbox</span></td>
+          <td>Bizbox A 블루멤버십 연간 이용료 (225ea)<br><span class="note">기간: 2023.07.01 ~ 2024.06.30</span></td>
+          <td class="amount">9,212,500</td>
+        </tr>
+        <tr style="background:rgba(232,90,26,0.06);">
+          <td></td><td>08월</td><td><span class="tag tag-cloud">클라우드</span></td>
+          <td>클라우드서비스 이용지원 사업 자부담금<br><span class="note" style="color:#e03030;">총 12,080,640원 중 정부지원 4,392,960원 차감</span></td>
+          <td class="amount" style="color:var(--accent3);">7,687,680</td>
+        </tr>
+        <tr class="subtotal">
+          <td colspan="4" style="text-align:right;color:var(--muted);font-size:12px;">23년 소계</td>
+          <td class="amount">33,545,820</td>
+        </tr>
+        <!-- 2024 -->
+        <tr>
+          <td>2024</td><td>03월</td><td><span class="tag tag-blue">ICUBE</span></td>
+          <td>ICUBE 블루멤버십 연간 이용료<br><span class="note">기간: 2024.03.01 ~ 2025.02.28</span></td>
+          <td class="amount">5,069,900</td>
+        </tr>
+        <tr>
+          <td></td><td>06월</td><td><span class="tag tag-gw">Bizbox</span></td>
+          <td>Bizbox A 블루멤버십 연간 이용료 (200ea)<br><span class="note">기간: 2024.07.01 ~ 2025.06.30</span></td>
+          <td class="amount">8,800,000</td>
+        </tr>
+        <tr class="subtotal">
+          <td colspan="4" style="text-align:right;color:var(--muted);font-size:12px;">24년 소계</td>
+          <td class="amount">13,869,900</td>
+        </tr>
+        <!-- 2025 -->
+        <tr>
+          <td>2025</td><td>01월</td><td><span class="tag tag-cloud">클라우드</span></td>
+          <td>클라우드 서비스 (ICUBE, 그룹웨어) 연간 이용료<br><span class="note">기간: 2025.01.01 ~ 2025.12.31</span></td>
+          <td class="amount">12,080,640</td>
+        </tr>
+        <tr>
+          <td></td><td>02월</td><td><span class="tag tag-blue">ICUBE</span></td>
+          <td>ICUBE 블루멤버십 연간 이용료<br><span class="note">기간: 2025.03.01 ~ 2026.02.28</span></td>
+          <td class="amount">11,535,700</td>
+        </tr>
+        <tr>
+          <td></td><td>09월</td><td><span class="tag tag-gw">Bizbox</span></td>
+          <td>Bizbox A 블루멤버십 연간 이용료 (190ea)<br><span class="note">기간: 2025.07.01 ~ 2026.06.30</span></td>
+          <td class="amount">8,635,000</td>
+        </tr>
+        <tr class="subtotal">
+          <td colspan="4" style="text-align:right;color:var(--muted);font-size:12px;">25년 소계</td>
+          <td class="amount">32,251,340</td>
+        </tr>
+        <!-- 2026 -->
+        <tr>
+          <td>2026</td><td>01월</td><td><span class="tag tag-cloud">클라우드</span></td>
+          <td>클라우드 서비스 (ICUBE, 그룹웨어) 연간 이용료<br><span class="note">기간: 2026.01.01 ~ 2026.12.31</span></td>
+          <td class="amount">12,080,640</td>
+        </tr>
+        <tr>
+          <td></td><td>02월</td><td><span class="tag tag-blue">ICUBE</span></td>
+          <td>ICUBE 블루멤버십 연간 이용료<br><span class="note">기간: 2026.03.01 ~ 2027.02.28</span></td>
+          <td class="amount">11,535,700</td>
+        </tr>
+        <tr>
+          <td></td><td>06월</td><td><span class="tag tag-gw">Bizbox</span></td>
+          <td>Bizbox A 블루멤버십 연간 이용료<br><span class="note">계약 라이선스 확인 중 · 기간: 2026.07.01 ~ 2027.06.30</span></td>
+          <td class="amount" style="color:var(--muted);">지급 예정</td>
+        </tr>
+        <tr class="subtotal">
+          <td colspan="4" style="text-align:right;color:var(--muted);font-size:12px;">26년 소계 (확정분)</td>
+          <td class="amount">23,616,340</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="divider"></div>
+
+  <!-- ISSUES / CHECK -->
+  <div class="section-label">확인 필요 사항</div>
+  <div class="section-title">향후 검토 / 이슈</div>
+  <div class="three-col">
+    <div class="panel">
+      <div class="panel-title"><span class="dot dot-orange"></span> 2026년 Bizbox 계약</div>
+      <div style="font-size:13px;color:var(--label);line-height:1.7;">
+        2026.07.01 ~ 2027.06.30 기간의 Bizbox A 블루멤버십 계약 라이선스 수량 및 금액 미확정.<br>
+        <strong style="color:var(--text);">→ 라이선스 규모 확인 후 예산 반영 필요</strong>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><span class="dot dot-green"></span> 라이선스 최적화</div>
+      <div style="font-size:13px;color:var(--label);line-height:1.7;">
+        Bizbox A 라이선스: 225ea(2023) → 200ea(2024) → 190ea(2025)로 축소 추세.<br>
+        <strong style="color:var(--text);">→ 실 사용자 수 대비 적정 규모 지속 모니터링 권고</strong>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><span class="dot dot-purple"></span> 정부지원 재검토</div>
+      <div style="font-size:13px;color:var(--label);line-height:1.7;">
+        2023년 클라우드 이용지원 사업으로 약 440만 원 절감 성공.<br>
+        <strong style="color:var(--text);">→ 2026년도 지원 사업 공고 시 재신청 검토 권고</strong>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>더존 솔루션 현황 보고서 · 내부 보고용 초안</span>
+  <span>기준일: 2025년 5월 · 출처: 더존 지출 현황 (현황관련_더존.xlsx)</span>
+</div>
+
+</body>
+</html>
